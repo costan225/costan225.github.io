@@ -83,17 +83,17 @@
 <meta name="keywords" content="redis,performance">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用pipeline提高redis并发性能">
-<meta property="og:url" content="https://costan225.github.io/2019/07/18/redis性能调优/index.html">
+<meta property="og:url" content="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/index.html">
 <meta property="og:site_name" content="Costan的小站">
 <meta property="og:description" content="redis的pipeline机制在某些场景下能够提高web服务qps，降低redis-server端的cpu损耗。比如同时多次请求redis数据，请求结果之间互不依赖；或者替换lua数组下标方式访问KEYS[i]，避免集群环境脚本访问限制。本文测试pipeline方式对WebServer端和RedisServer端的性能影响。 测试环境及工具 web-server: mac, golang-gin">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://costan225.github.io/2019/07/18/redis性能调优/do1_cpu.png">
-<meta property="og:image" content="https://costan225.github.io/2019/07/18/redis性能调优/do2_cpu.png">
+<meta property="og:image" content="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/do1_cpu.png">
+<meta property="og:image" content="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/do2_cpu.png">
 <meta property="og:updated_time" content="2019-08-17T08:28:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用pipeline提高redis并发性能">
 <meta name="twitter:description" content="redis的pipeline机制在某些场景下能够提高web服务qps，降低redis-server端的cpu损耗。比如同时多次请求redis数据，请求结果之间互不依赖；或者替换lua数组下标方式访问KEYS[i]，避免集群环境脚本访问限制。本文测试pipeline方式对WebServer端和RedisServer端的性能影响。 测试环境及工具 web-server: mac, golang-gin">
-<meta name="twitter:image" content="https://costan225.github.io/2019/07/18/redis性能调优/do1_cpu.png">
+<meta name="twitter:image" content="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/do1_cpu.png">
 
 
 
@@ -123,7 +123,7 @@
 
 
 
-  <link rel="canonical" href="https://costan225.github.io/2019/07/18/redis性能调优/">
+  <link rel="canonical" href="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/">
 
 
 
@@ -296,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://costan225.github.io/2019/07/18/redis性能调优/">
+    <link itemprop="mainEntityOfPage" href="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="costan225">
@@ -416,8 +416,8 @@
 <h4 id="cpu-负载"><a href="#cpu-负载" class="headerlink" title="cpu 负载"></a>cpu 负载</h4><blockquote>
 <p>cpu 负载曲线 </p>
 </blockquote>
-<img src="/2019/07/18/redis性能调优/do1_cpu.png" title="同步多次请求">
-<img src="/2019/07/18/redis性能调优/do2_cpu.png" title="pipeline请求">
+<img src="/2019/07/18/使用pipeline提高redis并发性能/do1_cpu.png" title="同步多次请求">
+<img src="/2019/07/18/使用pipeline提高redis并发性能/do2_cpu.png" title="pipeline请求">
 
 <h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>测试过程向redis-server请求8次数据，pipeline方式的web-qps是非pipeline方式的3倍；若控制两种方式的qps相同，则pipeline方式的cpu使用率约为非pipeline方式的一半。为提高redis的并发性能提供了一种途径。同时要注意控制单次pipeline的数据量，避免单次请求耗时而阻塞其他redis请求。</p>
 
@@ -451,7 +451,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接:</strong>
-    <a href="https://costan225.github.io/2019/07/18/redis性能调优/" title="使用pipeline提高redis并发性能">https://costan225.github.io/2019/07/18/redis性能调优/</a>
+    <a href="https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/" title="使用pipeline提高redis并发性能">https://costan225.github.io/2019/07/18/使用pipeline提高redis并发性能/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明: </strong>
