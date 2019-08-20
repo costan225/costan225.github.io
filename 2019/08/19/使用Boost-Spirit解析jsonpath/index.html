@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Boost-Spirit,jsonpath,Range-V3,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="jsonpath是一种从json中抽取信息的工具，能够降低json数据处理复杂度，提高可读性与可维护性。jsonpath之于json相当于Xpath之于XML。为减少业务需求中频繁处理json数据逻辑的痛点，为nlohmann/json库手码jsonpath功能。 支持功能costan225/jsonpath除函数调用功能(C++可以更高效直接操作target data得到统计数据)外，支持大部分">
+<meta name="keywords" content="Boost-Spirit,jsonpath,Range-V3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Boost-Spirit解析jsonpath">
+<meta property="og:url" content="https://costan225.github.io/2019/08/19/使用Boost-Spirit解析jsonpath/index.html">
+<meta property="og:site_name" content="Costan的小站">
+<meta property="og:description" content="jsonpath是一种从json中抽取信息的工具，能够降低json数据处理复杂度，提高可读性与可维护性。jsonpath之于json相当于Xpath之于XML。为减少业务需求中频繁处理json数据逻辑的痛点，为nlohmann/json库手码jsonpath功能。 支持功能costan225/jsonpath除函数调用功能(C++可以更高效直接操作target data得到统计数据)外，支持大部分">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-08-20T06:47:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Boost-Spirit解析jsonpath">
+<meta name="twitter:description" content="jsonpath是一种从json中抽取信息的工具，能够降低json数据处理复杂度，提高可读性与可维护性。jsonpath之于json相当于Xpath之于XML。为减少业务需求中频繁处理json数据逻辑的痛点，为nlohmann/json库手码jsonpath功能。 支持功能costan225/jsonpath除函数调用功能(C++可以更高效直接操作target data得到统计数据)外，支持大部分">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://costan225.github.io/2019/08/19/使用Boost-Spirit解析jsonpath/">
+
+
+
+
+
+  <title>使用Boost-Spirit解析jsonpath | Costan的小站</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Costan的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            Schedule
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            Sitemap
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            Commonweal 404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://costan225.github.io/2019/08/19/使用Boost-Spirit解析jsonpath/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="costan225">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/film.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Costan的小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Boost-Spirit解析jsonpath</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-19T14:12:55+08:00">
+                2019-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>jsonpath是一种从json中抽取信息的工具，能够降低json数据处理复杂度，提高可读性与可维护性。jsonpath之于json相当于Xpath之于XML。为减少业务需求中频繁处理json数据逻辑的痛点，为nlohmann/json库手码jsonpath功能。</p>
+<h3 id="支持功能"><a href="#支持功能" class="headerlink" title="支持功能"></a>支持功能</h3><p>costan225/jsonpath除函数调用功能(C++可以更高效直接操作target data得到统计数据)外，支持大部分jsonpath标准。另外根据实际需求，添加了数据替换功能，能够对抽取结果做修改。</p>
+<p>用到的核心库：<strong>Boost-Spirit X3</strong>, <strong>Range-V3</strong>。Spirit是Boost的解析器框架，遵循Extended Backus Naur Form (EBNF) 规范，Spirit-X3是Spirit新一代版本，<strong>优化了编译时间(极大解放了生产力)</strong>和runtime性能。Range-V3是c++20 Ranges库的source，是FP风格编码的理想选择。</p>
+<h4 id="支持语法功能"><a href="#支持语法功能" class="headerlink" title="支持语法功能"></a>支持语法功能</h4><table>
+<thead>
+<tr>
+<th align="left">功能示例</th>
+<th align="left">是否支持</th>
+<th align="left">功能描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>.prop</strong></td>
+<td align="left">是</td>
+<td align="left">名为prop的子节点</td>
+</tr>
+<tr>
+<td align="left"><strong>[prop]</strong></td>
+<td align="left">否</td>
+<td align="left">名为prop的子节点</td>
+</tr>
+<tr>
+<td align="left"><strong>*</strong></td>
+<td align="left">是</td>
+<td align="left">通配符, 当前节点的所有孩子节点</td>
+</tr>
+<tr>
+<td align="left"><strong>..prop</strong></td>
+<td align="left">是</td>
+<td align="left">递归搜索名为prop的子节点</td>
+</tr>
+<tr>
+<td align="left"><strong>[beg:step:end]</strong></td>
+<td align="left">是</td>
+<td align="left">数组[beg,end),步长step可选</td>
+</tr>
+<tr>
+<td align="left"><strong>[?(expression)]</strong></td>
+<td align="left">是</td>
+<td align="left">过滤器表达式,用于数组</td>
+</tr>
+<tr>
+<td align="left"><strong>.func()</strong></td>
+<td align="left">否</td>
+<td align="left">函数,可供result对象调用</td>
+</tr>
+</tbody></table>
+<h4 id="支持过滤器功能"><a href="#支持过滤器功能" class="headerlink" title="支持过滤器功能"></a>支持过滤器功能</h4><table>
+<thead>
+<tr>
+<th align="left">过滤器功能</th>
+<th align="left">是否支持</th>
+<th align="left">功能描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>@</strong></td>
+<td align="left">是</td>
+<td align="left">过滤器引用当前节点</td>
+</tr>
+<tr>
+<td align="left"><strong>$</strong></td>
+<td align="left">是</td>
+<td align="left">过滤器引用根节点</td>
+</tr>
+<tr>
+<td align="left"><strong>prop1 &gt; prop2</strong></td>
+<td align="left">是</td>
+<td align="left">比较操作符,支持 &gt;/&lt;/==/&gt;=/&lt;=</td>
+</tr>
+<tr>
+<td align="left"><strong>prop1 ~= regex</strong></td>
+<td align="left">是</td>
+<td align="left">正则表达式</td>
+</tr>
+<tr>
+<td align="left"><strong>exp1 &amp;&amp; exp2</strong></td>
+<td align="left">是</td>
+<td align="left">关系操作符,支持</td>
+</tr>
+<tr>
+<td align="left"><strong>prop in (set)</strong></td>
+<td align="left">否</td>
+<td align="left">in nin 关键字</td>
+</tr>
+</tbody></table>
+<h3 id="使用及示例"><a href="#使用及示例" class="headerlink" title="使用及示例"></a>使用及示例</h3><h4 id="样本数据"><a href="#样本数据" class="headerlink" title="样本数据"></a>样本数据</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"store"</span>: &#123;</span><br><span class="line">        <span class="attr">"book"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"category"</span>: <span class="string">"reference"</span>,</span><br><span class="line">                <span class="attr">"author"</span>: <span class="string">"Nigel Rees"</span>,</span><br><span class="line">                <span class="attr">"title"</span>: <span class="string">"Sayings of the Century"</span>,</span><br><span class="line">                <span class="attr">"price"</span>: <span class="number">8.95</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"category"</span>: <span class="string">"fiction"</span>,</span><br><span class="line">                <span class="attr">"author"</span>: <span class="string">"Evelyn Waugh"</span>,</span><br><span class="line">                <span class="attr">"title"</span>: <span class="string">"Sword of Honour"</span>,</span><br><span class="line">                <span class="attr">"price"</span>: <span class="number">12.99</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"category"</span>: <span class="string">"fiction"</span>,</span><br><span class="line">                <span class="attr">"author"</span>: <span class="string">"Herman Melville"</span>,</span><br><span class="line">                <span class="attr">"title"</span>: <span class="string">"Moby Dick"</span>,</span><br><span class="line">                <span class="attr">"isbn"</span>: <span class="string">"0-553-21311-3"</span>,</span><br><span class="line">                <span class="attr">"price"</span>: <span class="number">8.99</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="attr">"category"</span>: <span class="string">"fiction"</span>,</span><br><span class="line">                <span class="attr">"author"</span>: <span class="string">"J. R. R. Tolkien"</span>,</span><br><span class="line">                <span class="attr">"title"</span>: <span class="string">"The Lord of the Rings"</span>,</span><br><span class="line">                <span class="attr">"isbn"</span>: <span class="string">"0-395-19395-8"</span>,</span><br><span class="line">                <span class="attr">"price"</span>: <span class="number">22.99</span></span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">"bicycle"</span>: &#123;</span><br><span class="line">            <span class="attr">"color"</span>: <span class="string">"red"</span>,</span><br><span class="line">            <span class="attr">"price"</span>: <span class="number">19.95</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"expensive"</span>: <span class="number">10</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="语法示例"><a href="#语法示例" class="headerlink" title="语法示例"></a>语法示例</h4><table>
+<thead>
+<tr>
+<th align="left">jsonpath</th>
+<th align="left">result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">$.store.bicycle.color</td>
+<td align="left">[“red”]</td>
+</tr>
+<tr>
+<td align="left">$.store.book[0,-1].price</td>
+<td align="left">[8.95, 22.99]</td>
+</tr>
+<tr>
+<td align="left">$.store.book[-2:].price</td>
+<td align="left">[8.99, 22.99]</td>
+</tr>
+<tr>
+<td align="left">$.store.book[0:3:2].price</td>
+<td align="left">[8.95, 8.99]</td>
+</tr>
+<tr>
+<td align="left">$.store.book[?(@.isbn&amp;&amp;@.title==’Moby Dick’)].price</td>
+<td align="left">[8.99]</td>
+</tr>
+<tr>
+<td align="left">$.store.book[?(@.price&lt;$.expensive)].price</td>
+<td align="left">[8.95, 8.99]</td>
+</tr>
+<tr>
+<td align="left">$.store.book[?(@.title~=/Sword.*/i)].author</td>
+<td align="left">[“Evelyn Waugh”]</td>
+</tr>
+<tr>
+<td align="left">$..price</td>
+<td align="left">[19.95, 8.95, 12.99, 8.99, 22.99]</td>
+</tr>
+</tbody></table>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// header files</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"json/json.hpp"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"jsonpath/jsonpath.hpp"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> nlohmann</span><br><span class="line"><span class="keyword">using</span> coatan::jsonpath;</span><br><span class="line"></span><br><span class="line"><span class="function">jsonpath <span class="title">p</span><span class="params">(<span class="string">"$.school.rank"</span>)</span></span>;</span><br><span class="line"><span class="keyword">if</span>(p.valid()) &#123;</span><br><span class="line">    json j; <span class="comment">// sample data</span></span><br><span class="line">    json r = p.val(j); <span class="comment">// result</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="与golang版本性能对比"><a href="#与golang版本性能对比" class="headerlink" title="与golang版本性能对比"></a>与golang版本性能对比</h3><p>选取github上star较高并支持filter的oliveagle/jsonpath库作对比。批量执行100000次查找。</p>
+<h4 id="C-版本"><a href="#C-版本" class="headerlink" title="C++版本"></a>C++版本</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> p = jsonpath(<span class="string">"$.store.book[?(@.price&lt;$.expensive)]"</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100000</span>; ++i) &#123;</span><br><span class="line">    <span class="keyword">auto</span> res = p.eval(j);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">time ./jsonpath-c++</span><br><span class="line">./jsonpath-c++  0.90s user 0.00s system 99% cpu 0.907 total</span><br></pre></td></tr></table></figure>
+
+<h4 id="golang-版本"><a href="#golang-版本" class="headerlink" title="golang 版本"></a>golang 版本</h4><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pat, _ := jsonpath.Compile(<span class="string">`$.store.book[?(@.price &lt; $.expensive)]`</span>)</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">	res, _ = pat.Lookup(json_data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">time ./jsonpath-golang</span><br><span class="line">./jsonpath-golang  2.59s user 0.03s system 104% cpu 2.508 total</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+        
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束------</div>
+    
+</div>
+
+        
+    </div>
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者:</strong>
+    costan225
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接:</strong>
+    <a href="https://costan225.github.io/2019/08/19/使用Boost-Spirit解析jsonpath/" title="使用Boost-Spirit解析jsonpath">https://costan225.github.io/2019/08/19/使用Boost-Spirit解析jsonpath/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明: </strong>
+    本站文章非特殊声明，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/">CC BY-NC-SA 3.0</a>许可协议，转载请注明出处
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Boost-Spirit/" rel="tag"><i class="fa fa-tag"></i> Boost-Spirit</a>
+          
+            <a href="/tags/jsonpath/" rel="tag"><i class="fa fa-tag"></i> jsonpath</a>
+          
+            <a href="/tags/Range-V3/" rel="tag"><i class="fa fa-tag"></i> Range-V3</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/18/使用pipeline提高redis并发性能/" rel="next" title="使用pipeline提高redis并发性能">
+                <i class="fa fa-chevron-left"></i> 使用pipeline提高redis并发性能
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/film.jpg" alt="costan225">
+            
+              <p class="site-author-name" itemprop="name">costan225</p>
+              <p class="site-description motion-element" itemprop="description">那些青春，无比清晰</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#支持功能"><span class="nav-number">1.</span> <span class="nav-text">支持功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#支持语法功能"><span class="nav-number">1.1.</span> <span class="nav-text">支持语法功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#支持过滤器功能"><span class="nav-number">1.2.</span> <span class="nav-text">支持过滤器功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用及示例"><span class="nav-number">2.</span> <span class="nav-text">使用及示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#样本数据"><span class="nav-number">2.1.</span> <span class="nav-text">样本数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语法示例"><span class="nav-number">2.2.</span> <span class="nav-text">语法示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码示例"><span class="nav-number">2.3.</span> <span class="nav-text">代码示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与golang版本性能对比"><span class="nav-number">3.</span> <span class="nav-text">与golang版本性能对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#C-版本"><span class="nav-number">3.1.</span> <span class="nav-text">C++版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#golang-版本"><span class="nav-number">3.2.</span> <span class="nav-text">golang 版本</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">costan225</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
